@@ -1,3 +1,4 @@
+
 name: Build MergeSMS Android APK
 
 on:
@@ -25,21 +26,28 @@ jobs:
           java-version: "17"
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
         with:
           accept-android-sdk-licenses: true
           log-accepted-android-sdk-licenses: false
+          packages: platform-tools
 
       - name: Install Android SDK packages
         run: |
-          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager --install \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
 
       - name: Check project files
         run: |
           ls -la
           test -f settings.gradle || test -f settings.gradle.kts
           test -f app/build.gradle || test -f app/build.gradle.kts
-          test -f gradlew || { echo "gradlew is missing"; exit 1; }
+          test -f gradlew || {
+            echo "ERROR: gradlew is missing"
+            exit 1
+          }
 
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
