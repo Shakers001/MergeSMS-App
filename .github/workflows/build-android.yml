@@ -29,7 +29,6 @@ jobs:
         uses: android-actions/setup-android@v4
         with:
           accept-android-sdk-licenses: true
-          log-accepted-android-sdk-licenses: false
           packages: platform-tools
 
       - name: Install Android SDK packages
@@ -41,21 +40,17 @@ jobs:
 
       - name: Check project files
         run: |
-          ls -la
-          test -f settings.gradle || test -f settings.gradle.kts
+          test -f settings.gradle
+          test -f build.gradle
           test -f app/build.gradle || test -f app/build.gradle.kts
-          test -f gradlew || {
-            echo "ERROR: gradlew is missing"
-            exit 1
-          }
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x gradlew
-
-      - name: Set up Gradle
+      - name: Set up Gradle 8.7
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: wrapper
+          gradle-version: "8.7"
+
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --gradle-version 8.7
 
       - name: Build debug APK
         run: ./gradlew --no-daemon assembleDebug
