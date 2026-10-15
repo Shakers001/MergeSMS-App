@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -31,12 +31,11 @@ jobs:
           cmdline-tools-version: 12266719
 
       - name: Accept Android SDK licenses
-        run: |
-          yes | sdkmanager --licenses >/dev/null || true
+        run: yes | sdkmanager --licenses
 
       - name: Install Android SDK packages
         run: |
-          sdkmanager --install \
+          sdkmanager \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0"
@@ -60,7 +59,7 @@ jobs:
           test -f app/build/outputs/apk/debug/app-debug.apk
           ls -lh app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MergeSMS-debug-APK
